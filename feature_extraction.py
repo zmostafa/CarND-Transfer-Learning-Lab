@@ -58,7 +58,7 @@ def main(_):
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
     # TODO: train your model here
-    model.fit(X_train,y_train,batch_size=120,epochs=50,shuffle=True,validation_data=(X_val,y_val),verbose=2)
+    model.fit(X_train,y_train,batch_size=120,epochs=50,shuffle=True,validation_data=(X_val,y_val),verbose=1)
 
 
 # parses flags and calls the `main` function above
