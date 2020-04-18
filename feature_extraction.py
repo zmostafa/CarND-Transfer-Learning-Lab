@@ -1,8 +1,16 @@
 import pickle
 import tensorflow as tf
+import numpy as np
 # TODO: import Keras layers you need here
+from keras.layers import Input, Dense, Flatten, Activation
+from keras.models import Sequential, Model
 
-flags = tf.app.flags
+if tf.__version__ > '2.0':
+    print("Installed Tensorflow is not 1.x,it is %s" % tf.__version__)
+    import tensorflow.compat.v1 as tf
+    tf.disable_v2_behavior() 
+
+flags = tf.app.flags # tf.app is removed in v 2.0 , https://www.tensorflow.org/guide/effective_tf2 
 FLAGS = flags.FLAGS
 
 # command line flags
@@ -41,13 +49,16 @@ def main(_):
     print(X_train.shape, y_train.shape)
     print(X_val.shape, y_val.shape)
 
-    # TODO: define your model and hyperparams here
-    # make sure to adjust the number of classes based on
-    # the dataset
-    # 10 for cifar10
-    # 43 for traffic
+    
+    model = Sequential()
+    model.add(Flatten(input_shape=(X_train.shape[1:]))) # X_train.shape[1:] is (w,h,d) without number of examples in the set
+    model.add(Dense(len(np.unique(y_train)))) # len(np.unique(y_train)) gives back number of classes in dataset
+    model.add(Activation('softmax'))
+    
+    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
     # TODO: train your model here
+    model.fit(X_train,y_train,batch_size=120,epochs=50,shuffle=True,validation_data=(X_val,y_val),verbose=2)
 
 
 # parses flags and calls the `main` function above
